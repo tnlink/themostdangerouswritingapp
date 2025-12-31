@@ -27,6 +27,7 @@ class WritingApp extends React.Component {
     this.reset = this.reset.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
     this.toggleNightMode = this.toggleNightMode.bind(this);
+    this.toggleSyntaxColor = this.toggleSyntaxColor.bind(this);
     this.now = this.now.bind(this);
     this.editor = React.createRef();
 
@@ -68,6 +69,10 @@ class WritingApp extends React.Component {
   toggleNightMode() {
     localStorage.setItem("mdwa.night-mode", !this.state.nightMode);
     this.setState((prevState, props) => ({ nightMode: !prevState.nightMode }));
+  }
+
+  toggleSyntaxColor() {
+    this.setState((prevState, props) => ({ syntaxColor: !prevState.syntaxColor }));
   }
 
   toggleFullscreen() {
@@ -161,6 +166,7 @@ class WritingApp extends React.Component {
       this.state;
     const appClass = classNames("app", {
       "night-mode": nightMode,
+      "syntax-color-active": syntaxColor,
       danger: danger,
     });
     return (
@@ -171,6 +177,7 @@ class WritingApp extends React.Component {
             <Progress />
             <div className="buttons">
               {won && <Download finishTime={startTime + duration} text={text} />}
+              <i className="icon-syntax-color" onClick={this.toggleSyntaxColor} title="Toggle Syntax Coloring"></i>
               <i className="icon-night-mode" onClick={this.toggleNightMode}></i>
               <i
                 className="icon-fullscreen"

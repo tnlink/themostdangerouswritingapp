@@ -47,6 +47,21 @@
         font-size: $reg;
         i { opacity: .2; cursor: pointer; display: inline-block;}
         i:hover { opacity: 1; }
+        i.icon-syntax-color
+            {
+            font-family: Merriweather;
+            font-style: normal;
+            font-weight: 700;
+            &:before { content: 'A'; }
+            }
+        }
+    &.syntax-color-active .buttons i.icon-syntax-color
+        {
+        opacity: 1;
+        background: linear-gradient(135deg, #4A90E2 0%, #E74C3C 50%, #9B59B6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         }
     }
 
