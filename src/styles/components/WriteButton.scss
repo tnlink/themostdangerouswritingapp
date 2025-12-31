@@ -118,6 +118,30 @@
             }
         }
 
+    .syntax-color
+        {
+        cursor: pointer;
+        margin: 15px 0;
+
+        &:before
+            {
+            content: "";
+            vertical-align: middle;
+            width: 13px;
+            height: 13px;
+            margin-right: 4px;
+            border: 1px solid $off-off-white;
+            display: inline-block;
+            }
+        &.checked { color: $white;}
+        &.checked:before
+            {
+            border-color: $white;
+            background: $white;
+            box-shadow: inset 0px 0px 0px 2px $light-grey;
+            }
+        }
+
     .radio
         {
         border-radius: 50%;

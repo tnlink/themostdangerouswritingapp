@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import {AppContext} from './AppContext';
+import nlp from 'compromise';
 
 export default class Editor extends Component {
   constructor(props) {
@@ -35,6 +36,12 @@ export default class Editor extends Component {
       cutTop: scrollTop > 0,
       cutBottom: scrollHeight - 10 > height + scrollTop && scrollHeight > height
     });
+    
+    // Sync overlay scroll with textarea
+    const overlay = this.wrapper.current.querySelector('.syntax-overlay');
+    if (overlay) {
+      overlay.scrollTop = scrollTop;
+    }
   }
 
   componentDidMount(){
@@ -66,6 +73,65 @@ export default class Editor extends Component {
     const targetScrollTop = (currentLine * lineHeight);
     
     textarea.scrollTop = targetScrollTop;
+  }
+
+  renderColoredText(text) {
+    if (!text) return null;
+    
+    const doc = nlp(text);
+    const lines = text.split('\n');
+    
+    return lines.map((lineText, lineIndex) => {
+      if (!lineText.trim()) {
+        return <div key={lineIndex}>&nbsp;</div>;
+      }
+      
+      // Split by word boundaries but keep punctuation attached
+      const tokens = lineText.split(/(\s+)/);
+      
+      const coloredTokens = tokens.map((token, idx) => {
+        // Preserve whitespace
+        if (/^\s+$/.test(token)) {
+          return <span key={idx}>{token}</span>;
+        }
+        
+        if (!token.trim()) {
+          return <span key={idx}>{token}</span>;
+        }
+        
+        // Extract word without punctuation for POS tagging
+        const wordMatch = token.match(/^([^\w]*)(\w+)([^\w]*)$/);
+        if (!wordMatch) {
+          return <span key={idx}>{token}</span>;
+        }
+        
+        const [, leadingPunct, word, trailingPunct] = wordMatch;
+        
+        // Get POS for the clean word
+        const wordDoc = nlp(word);
+        let color = 'inherit';
+        
+        if (wordDoc.verbs().length > 0) {
+          color = '#4A90E2'; // Blue for verbs
+        } else if (wordDoc.adjectives().length > 0) {
+          color = '#D2691E'; // Brown/Orange for adjectives
+        } else if (wordDoc.adverbs().length > 0) {
+          color = '#9B59B6'; // Purple for adverbs
+        } else if (wordDoc.nouns().length > 0) {
+          color = '#E74C3C'; // Red for nouns
+        }
+        
+        return (
+          <span key={idx}>
+            {leadingPunct}
+            <span style={{color}}>{word}</span>
+            {trailingPunct}
+          </span>
+        );
+      });
+      
+      return <div key={lineIndex}>{coloredTokens}</div>;
+    });
   }
 
   onStroke(event) {
@@ -111,17 +177,23 @@ export default class Editor extends Component {
 
   render() {
     return (
-      <AppContext.Consumer>{ ({danger, hardcore, won}) =>
+      <AppContext.Consumer>{ ({danger, hardcore, syntaxColor, won}) =>
         <div
           className={classNames('editor', {
             danger,
             hardcore: hardcore && !won,
+            'syntax-color': syntaxColor && !won,
             'cut-top': this.state.cutTop,
             'cut-bottom': this.state.cutBottom,
           })}
          ref={this.wrapper}
         >
           {hardcore && <div className="hardcore" >{this.state.letter}</div> }
+          {syntaxColor && !won && (
+            <div className="syntax-overlay">
+              {this.renderColoredText(this.state.text)}
+            </div>
+          )}
           <textarea
             placeholder="Start typing..."
             spellCheck="false"
@@ -130,6 +202,7 @@ export default class Editor extends Component {
             onScroll={this.onScroll}
             ref={this.input}
             value={this.state.text}
+            style={{color: syntaxColor && !won ? 'transparent' : 'inherit'}}
           ></textarea>
         </div>
       }</AppContext.Consumer>

@@ -7,7 +7,8 @@ export const AppContext = React.createContext({
   limit: 5,
   progres: 0,
   type: "minutes",
-  hardcore: false
+  hardcore: false,
+  syntaxColor: false
 });
 
 export function withAppContext(Component, data = {}) {

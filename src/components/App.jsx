@@ -21,7 +21,7 @@ class WritingApp extends React.Component {
   constructor(props) {
     super(props);
 
-    let { limit, type, hardcore, nightmode, fullscreenHandler } = this.props;
+    let { limit, type, hardcore, syntaxColor, nightmode, fullscreenHandler } = this.props;
     this.handleStroke = this.handleStroke.bind(this);
     this.fullscreenHandler = fullscreenHandler;
     this.reset = this.reset.bind(this);
@@ -48,6 +48,7 @@ class WritingApp extends React.Component {
       limit: limit,
       type: type,
       hardcore: hardcore,
+      syntaxColor: syntaxColor,
     };
   }
 
@@ -117,11 +118,12 @@ class WritingApp extends React.Component {
     if (window.plausible) window.plausible("Fail");
   }
 
-  reset(type, limit, hardcore) {
+  reset(type, limit, hardcore, syntaxColor) {
     this.setState({
       type,
       limit,
       hardcore,
+      syntaxColor,
       won: false,
       lost: false,
       run: false,
@@ -155,7 +157,7 @@ class WritingApp extends React.Component {
   }
 
   render() {
-    const { danger, won, lost, text, nightMode, limit, type, hardcore, startTime, duration } =
+    const { danger, won, lost, text, nightMode, limit, type, hardcore, syntaxColor, startTime, duration } =
       this.state;
     const appClass = classNames("app", {
       "night-mode": nightMode,
@@ -190,7 +192,7 @@ class WritingApp extends React.Component {
                     ghost
                     hidePanel
                     label="Start Again"
-                    {...{ limit, type, hardcore }}
+                    {...{ limit, type, hardcore, syntaxColor }}
                   />
                 ) : (
                   <WordCount />

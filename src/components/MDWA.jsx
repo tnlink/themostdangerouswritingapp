@@ -31,6 +31,7 @@ const App = (props) => {
     limit: parseInt(searchParams.get("limit"), 10) || 5,
     type: searchParams.get("type") || "minutes",
     hardcore: parse(searchParams.get("hardcore")),
+    syntaxColor: parse(searchParams.get("syntaxColor")),
     nightmode: parse(searchParams.get("nightmode")),
   };
   // Setting a random key forces the component to re-mount even if

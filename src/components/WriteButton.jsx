@@ -7,6 +7,7 @@ export default class WriteButton extends React.Component {
     super(props);
     this.state = {
       hardcore: this.props.hardcore || false,
+      syntaxColor: this.props.syntaxColor || false,
       limit: this.props.limit || 5,
       type: this.props.type || "minutes",
       compact: true,
@@ -17,6 +18,7 @@ export default class WriteButton extends React.Component {
     this.setLimit = this.setLimit.bind(this);
     this.setType = this.setType.bind(this);
     this.toggleHardcore = this.toggleHardcore.bind(this);
+    this.toggleSyntaxColor = this.toggleSyntaxColor.bind(this);
     this.showPanel = this.showPanel.bind(this);
   }
 
@@ -46,6 +48,7 @@ export default class WriteButton extends React.Component {
     });
   }
   toggleHardcore(hardcore) { this.setState((prevState, props) => ({ hardcore: !prevState.hardcore })); }
+  toggleSyntaxColor(syntaxColor) { this.setState((prevState, props) => ({ syntaxColor: !prevState.syntaxColor })); }
 
   renderOptions() {
     const options = this.props.limits[this.state.type];
@@ -74,6 +77,7 @@ export default class WriteButton extends React.Component {
             { this.renderOptions() }
           </div>
             <div onClick={this.toggleHardcore} className={classNames('hardcore', {checked: this.state.hardcore})}>Hardcore mode</div>
+            <div onClick={this.toggleSyntaxColor} className={classNames('syntax-color', {checked: this.state.syntaxColor})}>Syntax coloring</div>
         </div>
       </div>
     )
@@ -85,14 +89,14 @@ export default class WriteButton extends React.Component {
       small: this.props.small,
       ghost: this.props.ghost
     })
-    const {limit, type, hardcore} = this.state;
+    const {limit, type, hardcore, syntaxColor} = this.state;
     return (
       <div className={wrapperWlasses}>
         { !this.props.noPanel && !this.state.hidePanel && (this.state.compact ? this.renderCompactChooser() : this.renderFullChooser()) }
         <Link
           to={{
             pathname: "/write",
-            search: `?limit=${limit}&type=${type}` + (hardcore ? '&hardcore=true' : '')
+            search: `?limit=${limit}&type=${type}` + (hardcore ? '&hardcore=true' : '') + (syntaxColor ? '&syntaxColor=true' : '')
           }}
           className={buttonClasses}
           onMouseOver={this.showPanel}
