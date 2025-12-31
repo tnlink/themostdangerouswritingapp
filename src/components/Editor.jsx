@@ -42,7 +42,30 @@ export default class Editor extends Component {
   }
 
   onChange(event) {
-    this.setState({text: event.target.value});
+    this.setState({text: event.target.value}, () => {
+      this.centerCursor();
+    });
+  }
+
+  centerCursor() {
+    const textarea = this.input.current;
+    if (!textarea) return;
+    
+    // Get cursor position
+    const cursorPosition = textarea.selectionStart;
+    const textBeforeCursor = textarea.value.substring(0, cursorPosition);
+    const lines = textBeforeCursor.split('\n');
+    const currentLine = lines.length - 1; // 0-indexed
+    
+    // Calculate scroll position to keep cursor line centered
+    const lineHeight = parseFloat(getComputedStyle(textarea).lineHeight);
+    const textareaHeight = textarea.clientHeight;
+    
+    // Center the current line in the viewport
+    // Account for the 50vh padding we added
+    const targetScrollTop = (currentLine * lineHeight);
+    
+    textarea.scrollTop = targetScrollTop;
   }
 
   onStroke(event) {
@@ -72,6 +95,8 @@ export default class Editor extends Component {
         timerId: setInterval(this.clearLetter, 200),
       });
       this.props.onStroke(key, this.state.text);
+      // Center cursor after keystroke
+      setTimeout(() => this.centerCursor(), 0);
     }
   }
 
