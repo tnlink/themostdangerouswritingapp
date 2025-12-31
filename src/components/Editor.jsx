@@ -25,7 +25,7 @@ export default class Editor extends Component {
       'CapsLock', 'Shift', 'Delete', 'Home', 'End', ' '
     ];
     this.disabled_keys = ['Tab'];
-    this.control_keys = ['a', 'c', 'v', 'x', 'f'];
+    this.control_keys = ['a', 'c', /*'v',*/ 'x', 'f'];
   }
 
   onScroll(event) {
